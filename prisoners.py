@@ -34,20 +34,32 @@ def simulate_single_experiment(num_prisoners: int, num_drawers_to_open: int = 50
                 return False
     return False
 
-def repeat_experiments(num_prisoners : int, num_drawers_to_open: int = 50, num_experiments: int = 1000) -> float:
-    results = [simulate_single_experiment(num_prisoners, num_drawers_to_open) for _ in range(num_experiments)]
+def repeat_experiments(num_experiments: int = 1000, num_prisoners : int = 100, num_drawers_to_open: int = 50) -> float:
+    success_count = 0
+    
+    for _ in range(num_experiments):
+        if simulate_single_experiment(num_prisoners, num_drawers_to_open):
+            success_count += 1
 
     # Check how many experiments were successful.
-    total_success = sum(results)
-    
-    probability = total_success / num_experiments
+    probability = success_count / num_experiments
         
     return probability
 
 if __name__ == "__main__":
     # Get num_experiments input
-    num_prisoners = int(input("How many tries to simulate?(Default: 1000): "))
+    num_experiments_input = input("How many tries to simulate? (Default: 1000): ")
+
+    # Check if the input is a valid positive integer
+    try:
+        num_experiments = int(num_experiments_input) if num_experiments_input else 1000
+        if num_experiments <= 0:
+            raise ValueError("Number of experiments should be a positive integer.")
+    except ValueError:
+        print("Invalid input. Using the default value of 1000 experiments.")
+        num_experiments = 1000
+
     # Repeat the experiments and print the final result.
-    final_result = repeat_experiments(num_prisoners)
-   
-    print(f"Success Probability of '100 Prisoners Problem': {final_result}")
+    final_result = repeat_experiments(num_experiments=num_experiments)
+    print(f"Success Probability of '100 Prisoners Problem': {final_result: .3%}")
+
