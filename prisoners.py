@@ -24,12 +24,20 @@ def simulate_single_experiment(prisoners, max_attempts=50) -> bool:
 
     return experiment_success
 
-if __name__ == "__main__":
+def repeat_experiments(num_experiments=1000) -> float:
     # List comprehension to record experiment results.
-    results = [simulate_single_experiment(generate_prisoners()) for _ in range(1000)]
+    results = [simulate_single_experiment(generate_prisoners()) for _ in range(num_experiments)]
 
     # Check how many experiments were successful.
-    final_result = sum(results)
+    total_success = sum(results)
+    
+    probability = total_success / num_experiments
+        
+    return probability
 
-    print(final_result)
+if __name__ == "__main__":
+    # Repeat the experiments and print the final result.
+    final_result = repeat_experiments()
+   
+    print(f"Success Probability of '100 Prisoners Problem': {final_result}")
 
