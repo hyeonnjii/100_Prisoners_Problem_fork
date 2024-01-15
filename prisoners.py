@@ -36,8 +36,10 @@ def repeat_experiments(num_experiments=1000) -> float:
     return probability
 
 if __name__ == "__main__":
+    # Get num_experiments input
+    num_experiments = int(input("How many tries to simulate?(Default: 1000): "))
     # Repeat the experiments and print the final result.
-    final_result = repeat_experiments()
+    final_result = repeat_experiments(num_experiments)
    
     print(f"Success Probability of '100 Prisoners Problem': {final_result}")
 
