@@ -1,32 +1,41 @@
 import random
 
-def assign_prisoner_numbers(num_prisoners) -> list:
+def assign_prisoner_numbers(num_prisoners: int) -> list:
     # Assign numbers corresponding to each prisoner
     return list(range(1, num_prisoners + 1))
 
-def simulate_single_experiment(prisoners, max_attempts=50) -> bool:
+def shuffle_drawers(num_prisoners: int) -> list:
     # Initialize drawers with numbers matching prisoner IDs.
-    drawers = list(range(1, len(prisoners) + 1))  # Corrected drawer numbering
-
+    drawers = list(range(1, num_prisoners + 1))
     # Shuffle drawers list.
     random.shuffle(drawers)
+    return drawers
 
-    # Initialize a variable to track experiment success.
-    experiment_success = False
+def prisoner_find_own_number(prisoner_number: int, opened_drawers: list) -> bool:
+    # Check if the prisoner's number is in the opened drawers
+    return prisoner_number in opened_drawers
 
-    # Check if each prisoner finds their own drawer within the maximum attempts.
-    for _ in range(max_attempts):
-        # Check if all prisoners find their own drawer within the given attempts.
-        experiment_success = all(chosen == actual for chosen, actual in zip(drawers, prisoners))
-        
-        if experiment_success:
-            break  # Exit the loop if successful
+def is_in_loop(prisoner_number: int, opened_drawers: list) -> bool:
+    loop_start = opened_drawers.index(prisoner_number)
+    loop_numbers = set(opened_drawers[loop_start:])
+    return all((i+1) in loop_numbers for i in range(len(opened_drawers) - loop_start))
 
-    return experiment_success
+def simulate_single_experiment(num_prisoners: int, num_drawers_to_open: int = 50) -> bool:
+    prisoners = assign_prisoner_numbers(num_prisoners)
+    opened_drawers = shuffle_drawers(num_prisoners)
 
-def repeat_experiments(num_experiments=1000) -> float:
-    # List comprehension to record experiment results.
-    results = [simulate_single_experiment(generate_prisoners()) for _ in range(num_experiments)]
+    for prisoner_number in prisoners:
+        opened_drawers_prisoner = opened_drawers[:num_drawers_to_open]
+
+        if prisoner_find_own_number(prisoner_number, opened_drawers_prisoner):
+            if is_in_loop(prisoner_number, opened_drawers_prisoner):
+                return True
+            else:
+                return False
+    return False
+
+def repeat_experiments(num_prisoners : int, num_drawers_to_open: int = 50, num_experiments: int = 1000) -> float:
+    results = [simulate_single_experiment(num_prisoners, num_drawers_to_open) for _ in range(num_experiments)]
 
     # Check how many experiments were successful.
     total_success = sum(results)
@@ -37,8 +46,8 @@ def repeat_experiments(num_experiments=1000) -> float:
 
 if __name__ == "__main__":
     # Get num_experiments input
-    num_experiments = int(input("How many tries to simulate?(Default: 1000): "))
+    num_prisoners = int(input("How many tries to simulate?(Default: 1000): "))
     # Repeat the experiments and print the final result.
-    final_result = repeat_experiments(num_experiments)
+    final_result = repeat_experiments(num_prisoners)
    
     print(f"Success Probability of '100 Prisoners Problem': {final_result}")
