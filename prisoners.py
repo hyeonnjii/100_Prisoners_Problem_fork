@@ -1,7 +1,7 @@
 import random
 
-def generate_prisoners(num_prisoners=100) -> list:
-    # Create a list with numbers corresponding to each prisoner.
+def assign_prisoner_numbers(num_prisoners) -> list:
+    # Assign numbers corresponding to each prisoner
     return list(range(1, num_prisoners + 1))
 
 def simulate_single_experiment(prisoners, max_attempts=50) -> bool:
@@ -42,4 +42,3 @@ if __name__ == "__main__":
     final_result = repeat_experiments(num_experiments)
    
     print(f"Success Probability of '100 Prisoners Problem': {final_result}")
-
